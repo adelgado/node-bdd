@@ -34,7 +34,7 @@ app.post('/:n1', function (req, res) {
 	var n2 = req.query.n2
   console.log(n1)
   console.log(n2)
-	res.json({content: Number(n1) + Number(n2)})
+	res.json({content: Number(n1) + Number(n2) , hey : 5})
 })
 
 app.listen(3000, function(){

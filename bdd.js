@@ -49,42 +49,62 @@ module.exports = function createTest(name){
 
 		,assertResult: function(response){
 			try{
-				console.log('response')
-				console.log(response)
-				console.log('expected')
-				console.log(_expected)
-				;(function cmpObjects(expected, returned, ignoreValueList) {
-			for (var key in expected) {
-	        	if (typeof(expected[key]) === 'object') {
-		            cmpObjects(expected[key], returned[key], ignoreValueList)
-		            continue
-		        }
+				function forth(expected, returned, ignoreValueList) {
+					for (var key in expected) {
+			        	if (typeof(expected[key]) === 'object') {
+				            cmpObjects(expected[key], returned[key], ignoreValueList)
+				            continue
+				        }
 
-		        if (typeof(ignoreValueList) !== 'undefined') {
-			    	if (ignoreValueList.indexOf(key) !== -1) {
-			    		continue
-			    	}
-			    }
+				        if (typeof(ignoreValueList) !== 'undefined') {
+					    	if (ignoreValueList.indexOf(key) !== -1) {
+					    		continue
+					    	}
+					    }
 
-				var err
-			    // test if the key is missing 
-			    if( !returned.hasOwnProperty(key)) { 
-				    console.log(returned)
-			        err = "returned object is missing the key '" + key + "'"
-			        throw err
-			    }
+						var err
+					    // test if the key is missing 
+					    if( !returned.hasOwnProperty(key)) { 
+						    console.log(returned)
+					        err = "returned object is missing the key '" + key + "'"
+					        throw err
+					    }
 
-			    
+	//		            err = "Unexpected value '" + returned[key] +
+	//		                  "' for key '" + key + "'. Expected '"+
+	//		                  expected[key] + "'"
+	//		            throw err
+			        }
+				}
+				function back(expected, returned, ignoreValueList) {
+					for (var key in expected) {
+			        	if (typeof(expected[key]) === 'object') {
+				            cmpObjects(expected[key], returned[key], ignoreValueList)
+				            continue
+				        }
 
-			    // wrong value
-		    	if (expected[key] !== returned[key]) { //Test the value
-		            err = "Unexpected value '" + returned[key] +
-		                  "' for key '" + key + "'. Expected '"+
-		                  expected[key] + "'"
-		            throw err
-		        }
-		    }
-		})(_expected, response)
+				        if (typeof(ignoreValueList) !== 'undefined') {
+					    	if (ignoreValueList.indexOf(key) !== -1) {
+					    		continue
+					    	}
+					    }
+
+						var err
+					    // test if the key is missing 
+					    if( !returned.hasOwnProperty(key)) { 
+						    console.log(returned)
+					        err = "returned object has extra key '" + key + "'"
+					        throw err
+					    }
+
+	//		            err = "Unexpected value '" + returned[key] +
+	//		                  "' for key '" + key + "'. Expected '"+
+	//		                  expected[key] + "'"
+	//		            throw err
+			        }
+				}
+				ida(_expected, response)
+				volta(response, _expected)
 
 				_bddText += "When:\n\t" + _action + 
 				"\nThen:\n\t" + _postCondition
