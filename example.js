@@ -35,7 +35,7 @@ var http 	   = require('http')
 				res.on('data', function (chunk) {
 					console.log("Body:")
 					console.log(chunk)
-					test.assertResult(chunk)
+					test.assertResult(JSON.parse(chunk))
 				})	
 			}
 	    })
@@ -46,7 +46,7 @@ var http 	   = require('http')
    	})
 	//must pass the expected json
 	test.then("we should retrieve their sum"
-		, { "value": number_one + number_two })
+		, { content: (number_one + number_two) })
 
 	test.run()
 })()

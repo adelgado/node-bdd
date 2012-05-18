@@ -49,37 +49,44 @@ module.exports = function createTest(name){
 
 		,assertResult: function(response){
 			try{
-				;(function cmpObjects(expected, returned, ignoredValuesList){
-					for (var key in expected){
-					    // functions wont be compared
-					    if (typeof(expected[key]) === 'function')
-					        continue
+				console.log('response')
+				console.log(response)
+				console.log('expected')
+				console.log(_expected)
+				;(function cmpObjects(expected, returned, ignoreValueList) {
+			for (var key in expected) {
+	        	if (typeof(expected[key]) === 'object') {
+		            cmpObjects(expected[key], returned[key], ignoreValueList)
+		            continue
+		        }
 
-					    // test if the key is missing 
-					    var err = ''
-					    if(! returned.hasOwnProperty(key)){ 
-					        err = "returned object is missing the key '" + key + "'"
-					        throw err
-					    }
+		        if (typeof(ignoreValueList) !== 'undefined') {
+			    	if (ignoreValueList.indexOf(key) !== -1) {
+			    		continue
+			    	}
+			    }
 
-					    if (ignoredValuesList[key] !== undefined)
-					    	continue
+				var err
+			    // test if the key is missing 
+			    if( !returned.hasOwnProperty(key)) { 
+				    console.log(returned)
+			        err = "returned object is missing the key '" + key + "'"
+			        throw err
+			    }
 
-					    // wrong value
-					    if( (typeof(expected[key]) === 'number') || (typeof(expected[key]) === 'string') || (typeof(expected[key]) === 'boolean')) {
-					    	if (expected[key] !== returned[key]) { //Test the value
-					            err = "Unexpected value '" + returned[key] + "' for key '" + key + "'. Expected '" + expected[key] + "'"
-					            throw err
-					        }
-				        }
+			    
 
-				        if(typeof(expected[key]) === 'object'){ 
-				            cmpObjects(expected[key], returned[key])
-				        }
-				    }
-				})(_expected, response)
+			    // wrong value
+		    	if (expected[key] !== returned[key]) { //Test the value
+		            err = "Unexpected value '" + returned[key] +
+		                  "' for key '" + key + "'. Expected '"+
+		                  expected[key] + "'"
+		            throw err
+		        }
+		    }
+		})(_expected, response)
 
-				_bddText += "When:\n\t" + _hypothesis.action + 
+				_bddText += "When:\n\t" + _action + 
 				"\nThen:\n\t" + _postCondition
 				console.log(_bddText += "\n\n>> Test '" + _name + "' passed. \\o/")
 			}catch(err){
